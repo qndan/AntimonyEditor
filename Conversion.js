@@ -1,4 +1,3 @@
-// Keep the require for local testing using node path/to/Conversion.js or can use npm start
 // libantimony = require('./libantimony.js');
 
 var sbmlResult = "None";
