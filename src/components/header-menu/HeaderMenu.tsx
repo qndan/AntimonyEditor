@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import HeaderMenuDropdown, { HeaderMenuOption, SimpleHeaderMenuOption } from "./HeaderMenuDropdown";
+import HeaderMenuDropdown, { HeaderMenuOption } from "./HeaderMenuDropdown";
 import "./HeaderMenu.css";
 
 import { MyDB } from "../../App";
@@ -8,17 +8,17 @@ import RecommendAnnotationModal from "../recommend-annotation/RecommendAnnotatio
 import { IDBPDatabase } from "idb";
 
 export interface HeaderMenuProps {
-  /* The database with all the files and stuff */
+  /** The database with all the files and stuff */
   db: IDBPDatabase<MyDB> | null | undefined;
   setDb: (database: IDBPDatabase<MyDB> | null) => void;
 
-  /* Name of the current selected file */
+  /** Name of the current selected file */
   fileName: string;
-  /* Contents of the current selected file */
+  /** Contents of the current selected file */
   fileContent: string;
-  /* Set the contents of the current selected file */
+  /** Set the contents of the current selected file */
   setFileContent: (fileContent: string) => void;
-  /* Set files */
+  /** Set files */
   setUploadedFiles: (files: { name: string; content: string }[]) => void;
 
   /** Handle the Antimony to SBML file conversion process */
@@ -169,10 +169,10 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({
   }, [visibleDropdown]);
 
   /** Wraps an onSelected handler so it makes sure to turn off the dropdown. */
-  const wrapOnSelected = (onSelected: SimpleHeaderMenuOption["onSelected"]) => {
-    return (...args: Parameters<SimpleHeaderMenuOption["onSelected"]>) => {
+  const wrapOnSelected = (onSelected: () => any) => {
+    return () => {
       setVisibleDropdown("");
-      onSelected(...args);
+      return onSelected();
     };
   };
 
@@ -287,9 +287,9 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({
       
       {isAboutModalVisible && (
         <div 
-        className="modal-background" 
-        onClick={() => setAboutModalVisible(false)}
-      >
+          className="modal-background" 
+          onClick={() => setAboutModalVisible(false)}
+        >
         <div 
           className="about-modal" 
           onClick={(e) => e.stopPropagation()}

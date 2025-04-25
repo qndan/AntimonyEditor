@@ -1,55 +1,65 @@
 import React, { useState } from "react";
 import "./HeaderMenu.css";
 
-export interface BaseHeaderMenuOption {
-  /** Name of the option which will be the text that apppears. */
+/**
+ * Base header menu option with all the stuff an option can have.
+ * 
+ * NOTE: You should not create an option with all these fields set as the result will be ugly.
+ */
+export type BaseHeaderMenuOption = {
   name: string,
-  /** An extra element you can attach inline with the text */
-  extra?: JSX.Element,
-}
-
-/** A single option that can be selected. */
-export interface SimpleHeaderMenuOption extends BaseHeaderMenuOption {
-  onSelected: () => any,
   hotkey?: string,
+  extra?: JSX.Element,
+  active?: boolean,
 }
 
-/** An option that is a link to some other thing */
-export interface LinkHeaderMenuOption extends BaseHeaderMenuOption {
-  link: string,
-}
-
-/**
- * An option that can be "active" as with the color settings.
- * A checkmark will appear when `active` is true.
- */
-export interface ActiveHeaderMenuOption extends SimpleHeaderMenuOption {
-  active: boolean,
-}
-
-/**
- * An option that contains more options (a submenu).
- * These cannot be selected, but the options inside them can be
- */
-export interface GroupedHeaderMenuOption extends BaseHeaderMenuOption {
-  options: HeaderMenuOption[],
-}
-
+/** Header options you can have */
 export type HeaderMenuOption =
-  | SimpleHeaderMenuOption
-  | LinkHeaderMenuOption
-  | ActiveHeaderMenuOption
-  | GroupedHeaderMenuOption
+  /** Simple option that's just some text you can click  */
+  | BaseHeaderMenuOption & { onSelected: () => any }
+  
+  /** Option that is a link to some other site */
+  | BaseHeaderMenuOption & { link: string }
+  
+  /** Option that you hover over to open another dropdown with more options */
+  | BaseHeaderMenuOption & { options: HeaderMenuOption[] }
+
   /** This will display as a separator */
   | "---";
 
 export interface HeaderMenuDropdownProps {
   /** Options the user can click */
   options: HeaderMenuOption[],
-  /** Whether or not this dropdown is inside another one */
+
+  /** Whether or not this dropdown is inside another one. You can ignore this */
   isSubmenu?: boolean,
 }
 
+/**
+ * Dropdown for the items in the header.
+ * 
+ * @example
+ * // A single clickable option that says "hey click me" and shows the hotkey "Ctrl+S"
+ * const options = [
+ *  { name: "hey click me", hotkey: "Ctrl+S", onSelected: ... },
+ * ];
+ * 
+ * @example
+ * // Multiple clickable options, one has a submenu.
+ * const options = [
+ *  { name: "hey click me", onSelected: ... },
+ *  {
+ *    name: "hover me",
+ *    options: [{ name: "suboption" } ]},
+ *  },
+ * ];
+ * 
+ * @example
+ * // Link option to another site.
+ * const options = [
+ *  { name: "hey", link: "google.com" }
+ * ];
+ */
 const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
   options,
   isSubmenu,
@@ -88,7 +98,7 @@ const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
               onMouseLeave={() => handleOptionMouseLeave(option)}
             >
               {"link" in option
-                ? <a href={option.link} target="_blank" rel="noreferrer"> {option.name}</a>
+                ? <a href={option.link} target="_blank" rel="noreferrer">{option.name}</a>
                 : <span className="header-menu-dropdown-main-text">{option.name}</span>}
 
               {"options" in option &&
