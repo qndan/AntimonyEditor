@@ -70,41 +70,40 @@ const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
 
   return (
     <ul className={"header-menu-dropdown" + (isSubmenu ? " header-submenu" : "")}>
-      {options.map(option => {
+      {options.map((option, index) => {
         if (option === "---") {
-          return <hr />;
+          return <hr key={index} />;
         } else {
           return (
-            <li className="header-menu-dropdown-option">
+            <li
+              key={index}
+              className={
+                "header-menu-dropdown-button"
+                + ("active" in option ? (option.active ? " option-active" : " option-inactive") : "")
+              }
+              role="option"
+              aria-selected={"active" in option && option.active}
+              onClick={"onSelected" in option ? option.onSelected : undefined}
+              onMouseEnter={() => handleOptionMouseEnter(option)}
+              onMouseLeave={() => handleOptionMouseLeave(option)}
+            >
               {"link" in option
-                ? <a href={option.link} target="_blank" rel="noreferrer" className="header-menu-dropdown-button">
-                    {option.name}
-                  </a>
-                : <button
-                  className={
-                    "header-menu-dropdown-button"
-                    + ("active" in option ? (option.active ? " option-active" : " option-inactive") : "")
-                  }
-                  onClick={"onSelected" in option ? option.onSelected : undefined}
-                  onMouseEnter={() => handleOptionMouseEnter(option)}
-                  onMouseLeave={() => handleOptionMouseLeave(option)}
-                >
-                  <span className="header-menu-dropdown-main-text">{option.name}</span>
+                ? <a href={option.link} target="_blank" rel="noreferrer"> {option.name}</a>
+                : <span className="header-menu-dropdown-main-text">{option.name}</span>}
 
-                  {"options" in option &&
-                    <div className="header-dropdown-arrow-icon">&#9658;</div>}
+              {"options" in option &&
+                <div className="header-dropdown-arrow-icon">&#9658;</div>}
 
-                  {"hotkey" in option &&
-                    <span className="header-menu-dropdown-hotkey-text">{option.hotkey}</span>}
+              {"hotkey" in option &&
+                <span className="header-menu-dropdown-hotkey-text">{option.hotkey}</span>}
 
-                  {option.extra}
+              {option.extra}
 
-                  {visibleDropdown === option.name && "options" in option &&
-                    <HeaderMenuDropdown
-                      options={option.options}
-                      isSubmenu={true}
-                    />}
-                </button>}
+              {visibleDropdown === option.name && "options" in option &&
+                <HeaderMenuDropdown
+                  options={option.options}
+                  isSubmenu={true}
+                />}
             </li>
           );
         }

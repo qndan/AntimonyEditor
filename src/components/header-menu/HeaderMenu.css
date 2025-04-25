@@ -82,8 +82,7 @@ header {
 }
 
 /** Fix for link options */
-a.header-menu-dropdown-button {
-  box-sizing: border-box;
+.header-menu-dropdown-button > a {
   color: white;
   text-decoration: none;
 }

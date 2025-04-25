@@ -255,7 +255,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({
         <nav>
           <ul className="header-menu">
             {Object.entries(headerOptions).map(([name, options]) =>
-              <li className="header-menu-option">
+              <li key={name} className="header-menu-option">
                 <button
                   onClick={() => handleMenuOptionClick(name)}
                   onMouseEnter={() => handleMenuOptionHover(name)}
