@@ -329,6 +329,7 @@ const App: React.FC = () => {
         handleFileDownload={handleFileDownload}
         handleFileUpload={handleFileUpload}
         handleNewFile={handleNewFile}
+        highlightColor={highlightColor}
         setHighlightColor={setHighlightColor}
         colors={colors}
       />
