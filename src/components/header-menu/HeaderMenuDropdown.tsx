@@ -79,7 +79,10 @@ const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
   };
 
   return (
-    <ul className={"header-menu-dropdown" + (isSubmenu ? " header-submenu" : "")}>
+    <ul
+      className={"header-menu-dropdown" + (isSubmenu ? " header-submenu" : "")}
+      role="menu"
+    >
       {options.map((option, index) => {
         if (option === "---") {
           return <hr key={index} />;
@@ -91,8 +94,8 @@ const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
                 "header-menu-dropdown-button"
                 + ("active" in option ? (option.active ? " option-active" : " option-inactive") : "")
               }
-              role="option"
-              aria-selected={"active" in option && option.active}
+              role={"active" in option ? "menuitemcheckbox" : "menuitem"}
+              aria-checked={"active" in option && option.active}
               onClick={"onSelected" in option ? option.onSelected : undefined}
               onMouseEnter={() => handleOptionMouseEnter(option)}
               onMouseLeave={() => handleOptionMouseLeave(option)}

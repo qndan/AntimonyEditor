@@ -3,6 +3,11 @@ import userEvent from "@testing-library/user-event";
 import HeaderMenuDropdown from "../components/header-menu/HeaderMenuDropdown";
 
 describe("HeaderDropdown", () => {
+  /** Convience function to query menuitems. */
+  const queryAllMenuItems = (element: RenderResult) => {
+    return [...element.queryAllByRole("menuitem"), ...element.queryAllByRole("menuitemcheckbox")];
+  };
+
   test("options should all be displayed except in submenus", async () => {
     const options = [
       { name: "test", onSelected: jest.fn() },
@@ -27,7 +32,7 @@ describe("HeaderDropdown", () => {
       expect(dropdown.queryByText(option.name)).not.toBeNull();
     }
 
-    expect(dropdown.queryAllByRole("option")).toHaveLength(options.length);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(options.length);
   });
 
   test("clicking an option calls onSelected", async () => {
@@ -95,8 +100,8 @@ describe("HeaderDropdown", () => {
         options={options} />
     );
 
-    expect(dropdown.queryAllByRole("option")).toHaveLength(2);
-    expect(dropdown.queryAllByRole("option", { selected: true })).toHaveLength(1);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(2);
+    expect(dropdown.queryAllByRole("menuitemcheckbox", { checked: true })).toHaveLength(1);
   });
 
   test("--- displays as a ruler", async () => {
@@ -125,12 +130,12 @@ describe("HeaderDropdown", () => {
     );
 
     // Should only show one option right now
-    expect(dropdown.queryAllByRole("option")).toHaveLength(1);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(1);
 
     // Now should show all after hovering
     const menuOption = await dropdown.findByText("hover");
     await userEvent.pointer({ pointerName: "mouse", target: menuOption });
-    expect(dropdown.queryAllByRole("option")).toHaveLength(4);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(4);
 
     for (const suboption of options[0].options) {
       expect(dropdown.queryByText(suboption.name)).not.toBeNull();
@@ -162,12 +167,12 @@ describe("HeaderDropdown", () => {
         options={options} />
     );
 
-    expect(dropdown.queryAllByRole("option")).toHaveLength(1);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(1);
 
     // Hover the one one
     const hover = await dropdown.findByText("hover");
     await userEvent.hover(hover);
-    expect(dropdown.queryAllByRole("option")).toHaveLength(4);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(4);
 
     for (const suboption of options[0].options) {
       if (suboption === "---") continue;
@@ -177,7 +182,7 @@ describe("HeaderDropdown", () => {
     // Hover the second one
     const hover2 = await dropdown.findByText("hover2");
     await userEvent.hover(hover2);
-    expect(dropdown.queryAllByRole("option")).toHaveLength(8);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(8);
 
     for (const suboption of options[0].options[3].options) {
       expect(dropdown.queryByText(suboption.name)).not.toBeNull();
@@ -188,10 +193,10 @@ describe("HeaderDropdown", () => {
       But it works when manually tested
 
     await userEvent.unhover(hover2)
-    expect(dropdown.queryAllByRole("option")).toHaveLength(4);*/
+    expect(queryAllMenuItems(dropdown)).toHaveLength(4);*/
 
     // Unhover the first one
     await userEvent.unhover(hover);
-    expect(dropdown.queryAllByRole("option")).toHaveLength(1);
+    expect(queryAllMenuItems(dropdown)).toHaveLength(1);
   });
 });
