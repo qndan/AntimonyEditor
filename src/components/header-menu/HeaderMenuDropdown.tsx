@@ -39,13 +39,16 @@ export interface HeaderMenuDropdownProps {
  * Dropdown for the items in the header.
  * 
  * @example
- * // A single clickable option that says "hey click me" and shows the hotkey "Ctrl+S"
+ * A single clickable option that says "hey click me" and shows the hotkey "Ctrl+S"
+ * ```
  * const options = [
  *  { name: "hey click me", hotkey: "Ctrl+S", onSelected: ... },
  * ];
+ * ```
  * 
  * @example
- * // Multiple clickable options, one has a submenu.
+ * Multiple clickable options, one has a submenu.
+ * ```
  * const options = [
  *  { name: "hey click me", onSelected: ... },
  *  {
@@ -53,12 +56,15 @@ export interface HeaderMenuDropdownProps {
  *    options: [{ name: "suboption" } ]},
  *  },
  * ];
+ * ```
  * 
  * @example
- * // Link option to another site.
+ * Link option to another site.
+ * ```
  * const options = [
  *  { name: "hey", link: "google.com" }
  * ];
+ * ```
  */
 const HeaderMenuDropdown: React.FC<HeaderMenuDropdownProps> = ({
   options,
