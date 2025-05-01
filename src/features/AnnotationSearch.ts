@@ -4,7 +4,7 @@ const corsProxyUrl = "https://corsproxy.io/?"; // "https://api.allorigins.win/ra
 /**
  * @description Holds relevant information for a single annotation search result
  */
-type AnnotationInfo = {
+export type AnnotationInfo = {
   name: string;
   id: string;
   description: string;
@@ -217,7 +217,9 @@ export async function searchRhea(
         let currLine = split[i].split('\t');
         let reactionId = currLine[0].substring(5);
         let equation = currLine[1];
-        let ec: string[] = currLine[2].substring(3).split(';EC:');
+
+        // format: EC:12.2.121;EC:1242.24.24
+        let ec: string[] = currLine[2].substring(3).split(';EC:').filter(e => e.length > 0);
 
         output.push({
           id: reactionId,
