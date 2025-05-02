@@ -1,0 +1,21 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  Command:
+  curl "https://www.ebi.ac.uk/webservices/chebi/2.0/test/getLiteEntity?search=10&searchCategory=wefwaasdf&maximumResults=-1&starsCategory=FAIL" >> src/__tests__/features/chebi_fault.xml
+-->
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Body>
+    <S:Fault xmlns:ns4="http://www.w3.org/2003/05/soap-envelope">
+      <faultcode>S:Server</faultcode>
+      <faultstring>ERROR (General): we are having problems with this service... we are trying to
+        rectify the situation.</faultstring>
+      <detail>
+        <ChebiWebServiceFault xmlns="https://www.ebi.ac.uk/webservices/chebi">
+          <faultInfo>data 0: 10, data 1: null, </faultInfo>
+          <message>ERROR (General): we are having problems with this service... we are trying to
+            rectify the situation.</message>
+        </ChebiWebServiceFault>
+      </detail>
+    </S:Fault>
+  </S:Body>
+</S:Envelope>

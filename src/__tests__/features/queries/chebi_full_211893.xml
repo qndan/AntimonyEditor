@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Body>
+    <getCompleteEntityResponse xmlns="https://www.ebi.ac.uk/webservices/chebi">
+      <return>
+        <chebiId>CHEBI:211893</chebiId>
+        <chebiAsciiName>Heydenoic acid B</chebiAsciiName>
+        <definition></definition>
+        <status>SUBMITTED</status>
+        <smiles>O=C1C=C([C@H]2[C@@]([C@@H]1C2)(CCCC(C(=O)O)C)C)C</smiles>
+        <inchi>
+          InChI=1S/C15H22O3/c1-9(14(17)18)5-4-6-15(3)11-8-12(15)13(16)7-10(11)2/h7,9,11-12H,4-6,8H2,1-3H3,(H,17,18)/t9?,11-,12+,15-/m0/s1</inchi>
+        <inchiKey>UFJUADCKYVUHCT-TVBVRFQCSA-N</inchiKey>
+        <charge>0</charge>
+        <mass>250.338</mass>
+        <monoisotopicMass>250.15689</monoisotopicMass>
+        <entityStar>2</entityStar>
+        <IupacNames>
+          <data>5-[(1S,5S,6S)-2,6-dimethyl-4-oxo-6-bicyclo[3.1.1]hept-2-enyl]-2-methylpentanoic acid</data>
+          <type>IUPAC NAME</type>
+          <source>SUBMITTER</source>
+        </IupacNames>
+        <Formulae>
+          <data>C15H22O3</data>
+          <source>SUBMITTER</source>
+        </Formulae>
+        <ChemicalStructures>
+          <structure>
+            CDK 1030232201
+
+            18 19 0 0 0 0 0 0 0 0999 V2000
+            1.5441 -1.1966 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            0.8797 -0.7141 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.9015 0.1404 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            -0.2135 -1.2094 0.0000 C 0 0 2 0 0 0 0 0 0 0 0 0
+            0.1395 0.4930 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.0000 -0.4125 0.0000 C 0 0 2 0 0 0 0 0 0 0 0 0
+            -1.0104 -0.9959 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            -0.7969 -0.1990 0.0000 C 0 0 1 0 0 0 0 0 0 0 0 0
+            0.0930 1.3167 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.6121 -0.0591 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.6388 -0.9986 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            1.4290 -0.4125 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.1435 0.0000 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.8579 -0.4125 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            3.5724 0.0000 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.8579 -1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            4.2869 -0.4125 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            3.5724 0.8250 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            1 2 2 0 0 0 0
+            2 3 1 0 0 0 0
+            4 2 1 0 0 0 0
+            3 5 2 0 0 0 0
+            6 4 1 0 0 0 0
+            4 7 1 1 0 0 0
+            8 5 1 0 0 0 0
+            5 9 1 0 0 0 0
+            6 10 1 0 0 0 0
+            6 11 1 1 0 0 0
+            10 12 1 0 0 0 0
+            12 13 1 0 0 0 0
+            13 14 1 0 0 0 0
+            14 15 1 0 0 0 0
+            14 16 1 0 0 0 0
+            15 17 2 0 0 0 0
+            15 18 1 0 0 0 0
+            6 8 1 0 0 0 0
+            8 7 1 1 0 0 0
+            M END
+</structure>
+          <type>mol</type>
+          <dimension>2D</dimension>
+          <defaultStructure>true</defaultStructure>
+        </ChemicalStructures>
+        <OntologyParents>
+          <chebiName>monoterpenoid</chebiName>
+          <chebiId>CHEBI:25409</chebiId>
+          <type>is a</type>
+          <status>SUBMITTED</status>
+          <cyclicRelationship>false</cyclicRelationship>
+        </OntologyParents>
+        <CompoundOrigins>
+          <speciesText>Heydenia</speciesText>
+          <speciesAccession>NCBI:txid931642</speciesAccession>
+          <SourceType>PubMed Id</SourceType>
+          <SourceAccession>31598176</SourceAccession>
+        </CompoundOrigins>
+      </return>
+    </getCompleteEntityResponse>
+  </S:Body>
+</S:Envelope>

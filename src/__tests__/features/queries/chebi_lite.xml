@@ -1,0 +1,43 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+  Command:
+  curl "https://www.ebi.ac.uk/webservices/chebi/2.0/test/getLiteEntity?search=hey&searchCategory=a&maximumResults=16&starsCategory=ALL" >> src/__tests__/features/chebi_lite.xml
+-->
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Body>
+    <getLiteEntityResponse xmlns="https://www.ebi.ac.uk/webservices/chebi">
+      <return>
+        <ListElement>
+          <chebiId>CHEBI:211886</chebiId>
+          <chebiAsciiName>Heydenoic acid A</chebiAsciiName>
+          <searchScore>0.02</searchScore>
+          <entityStar>2</entityStar>
+        </ListElement>
+        <ListElement>
+          <chebiId>CHEBI:211893</chebiId>
+          <chebiAsciiName>Heydenoic acid B</chebiAsciiName>
+          <searchScore>0.02</searchScore>
+          <entityStar>2</entityStar>
+        </ListElement>
+        <ListElement>
+          <chebiId>CHEBI:224188</chebiId>
+          <chebiAsciiName>Iheyamide A</chebiAsciiName>
+          <searchScore>0.02</searchScore>
+          <entityStar>2</entityStar>
+        </ListElement>
+        <ListElement>
+          <chebiId>CHEBI:224192</chebiId>
+          <chebiAsciiName>Iheyamide B</chebiAsciiName>
+          <searchScore>0.02</searchScore>
+          <entityStar>2</entityStar>
+        </ListElement>
+        <ListElement>
+          <chebiId>CHEBI:224197</chebiId>
+          <chebiAsciiName>Iheyamide C</chebiAsciiName>
+          <searchScore>0.02</searchScore>
+          <entityStar>2</entityStar>
+        </ListElement>
+      </return>
+    </getLiteEntityResponse>
+  </S:Body>
+</S:Envelope>
