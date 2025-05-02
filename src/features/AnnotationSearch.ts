@@ -270,7 +270,6 @@ export async function searchOntology(
     }
 
     const data = await response.json();
-    console.log(data)
     let info: AnnotationInfo[] = data.elements.map((result: any) => {
       if (result.type[0] === "class" && result.type[1] === "entity") {
         // Get description
@@ -293,7 +292,7 @@ export async function searchOntology(
         // Add this element to the list of results
         return {
           id: result.curie,
-          name: result.label,
+          name: result.label[0],
           description: description,
           link: result.iri,
         };
