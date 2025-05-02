@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<S:Envelope xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Body>
+    <getCompleteEntityResponse xmlns="https://www.ebi.ac.uk/webservices/chebi">
+      <return>
+        <chebiId>CHEBI:224197</chebiId>
+        <chebiAsciiName>Iheyamide C</chebiAsciiName>
+        <definition></definition>
+        <status>SUBMITTED</status>
+        <smiles>
+          O=C(N([C@H](C(=O)O)C(CC)C)C)[C@H]1N(C(=O)[C@@H](N(C(=O)[C@H](NC(=O)[C@@H](N(C)C)CC2=CC=CC=C2)CC3=CC=CC=C3)C)C(C)C)CCC1</smiles>
+        <inchi>
+          InChI=1S/C38H55N5O6/c1-9-26(4)33(38(48)49)42(8)36(46)30-21-16-22-43(30)37(47)32(25(2)3)41(7)35(45)29(23-27-17-12-10-13-18-27)39-34(44)31(40(5)6)24-28-19-14-11-15-20-28/h10-15,17-20,25-26,29-33H,9,16,21-24H2,1-8H3,(H,39,44)(H,48,49)/t26?,29-,30+,31+,32+,33+/m1/s1</inchi>
+        <inchiKey>MFLOERPGEKLIJM-OGCSBCMNSA-N</inchiKey>
+        <charge>0</charge>
+        <mass>677.887</mass>
+        <monoisotopicMass>677.41523</monoisotopicMass>
+        <entityStar>2</entityStar>
+        <IupacNames>
+          <data>(2S)-2-[[(2S)-1-[(2S)-2-[[(2R)-2-[[(2S)-2-(dimethylamino)-3-phenylpropanoyl]amino]-3-phenylpropanoyl]-methylamino]-3-methylbutanoyl]pyrrolidine-2-carbonyl]-methylamino]-3-methylpentanoic
+            acid</data>
+          <type>IUPAC NAME</type>
+          <source>SUBMITTER</source>
+        </IupacNames>
+        <Formulae>
+          <data>C38H55N5O6</data>
+          <source>SUBMITTER</source>
+        </Formulae>
+        <ChemicalStructures>
+          <structure>
+            CDK 1030232203
+
+            49 51 0 0 0 0 0 0 0 0999 V2000
+            7.4570 1.2821 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            8.0701 0.7301 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            8.8548 0.9850 0.0000 N 0 0 0 0 0 0 0 0 0 0 0 0
+            7.8986 -0.0770 0.0000 C 0 0 1 0 0 0 0 0 0 0 0 0
+            9.0263 1.7919 0.0000 C 0 0 2 0 0 0 0 0 0 0 0 0
+            9.4678 0.4330 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            7.1449 -0.4125 0.0000 N 0 0 0 0 0 0 0 0 0 0 0 0
+            8.4506 -0.6900 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            9.8109 2.0470 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            8.4131 2.3440 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            6.4304 0.0000 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            7.2311 -1.2330 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            8.0381 -1.4045 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            10.4240 1.4949 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            9.9824 2.8539 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            7.6285 2.0891 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            8.5846 3.1510 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            6.4304 0.8250 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            5.7159 -0.4125 0.0000 C 0 0 1 0 0 0 0 0 0 0 0 0
+            7.0154 2.6411 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            5.0014 0.0000 0.0000 N 0 0 0 0 0 0 0 0 0 0 0 0
+            5.7159 -1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            4.2870 -0.4125 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            5.0014 0.8250 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            5.0014 -1.6500 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            6.4304 -1.6500 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            4.2870 -1.2375 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            3.5724 0.0000 0.0000 C 0 0 2 0 0 0 0 0 0 0 0 0
+            2.8579 -0.4125 0.0000 N 0 0 0 0 0 0 0 0 0 0 0 0
+            3.5724 0.8250 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.8579 -1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.8579 1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            3.5724 -1.6500 0.0000 O 0 0 0 0 0 0 0 0 0 0 0 0
+            2.1435 -1.6500 0.0000 C 0 0 1 0 0 0 0 0 0 0 0 0
+            2.8579 2.0625 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.1435 0.8250 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.1435 -2.4751 0.0000 N 0 0 0 0 0 0 0 0 0 0 0 0
+            1.4290 -1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.1435 2.4751 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            1.4290 1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            1.4290 -2.8876 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            2.8579 -2.8876 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.7145 -1.6500 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            1.4290 2.0625 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.0000 -1.2375 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.7145 -2.4751 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            -0.7145 -1.6500 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            0.0000 -2.8876 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            -0.7145 -2.4751 0.0000 C 0 0 0 0 0 0 0 0 0 0 0 0
+            1 2 2 0 0 0 0
+            2 3 1 0 0 0 0
+            4 2 1 6 0 0 0
+            5 3 1 1 0 0 0
+            3 6 1 0 0 0 0
+            4 7 1 0 0 0 0
+            4 8 1 0 0 0 0
+            5 9 1 0 0 0 0
+            5 10 1 0 0 0 0
+            7 11 1 0 0 0 0
+            7 12 1 0 0 0 0
+            8 13 1 0 0 0 0
+            9 14 2 0 0 0 0
+            9 15 1 0 0 0 0
+            10 16 1 0 0 0 0
+            10 17 1 0 0 0 0
+            11 18 2 0 0 0 0
+            19 11 1 0 0 0 0
+            16 20 1 0 0 0 0
+            19 21 1 6 0 0 0
+            19 22 1 0 0 0 0
+            21 23 1 0 0 0 0
+            21 24 1 0 0 0 0
+            22 25 1 0 0 0 0
+            22 26 1 0 0 0 0
+            23 27 2 0 0 0 0
+            28 23 1 0 0 0 0
+            28 29 1 6 0 0 0
+            28 30 1 0 0 0 0
+            29 31 1 0 0 0 0
+            30 32 1 0 0 0 0
+            31 33 2 0 0 0 0
+            34 31 1 0 0 0 0
+            32 35 2 0 0 0 0
+            32 36 1 0 0 0 0
+            34 37 1 1 0 0 0
+            34 38 1 0 0 0 0
+            35 39 1 0 0 0 0
+            36 40 2 0 0 0 0
+            37 41 1 0 0 0 0
+            37 42 1 0 0 0 0
+            38 43 1 0 0 0 0
+            39 44 2 0 0 0 0
+            43 45 2 0 0 0 0
+            43 46 1 0 0 0 0
+            45 47 1 0 0 0 0
+            46 48 2 0 0 0 0
+            47 49 2 0 0 0 0
+            12 13 1 0 0 0 0
+            40 44 1 0 0 0 0
+            48 49 1 0 0 0 0
+            M END
+</structure>
+          <type>mol</type>
+          <dimension>2D</dimension>
+          <defaultStructure>true</defaultStructure>
+        </ChemicalStructures>
+        <OntologyParents>
+          <chebiName>peptide</chebiName>
+          <chebiId>CHEBI:16670</chebiId>
+          <type>is a</type>
+          <status>SUBMITTED</status>
+          <cyclicRelationship>false</cyclicRelationship>
+        </OntologyParents>
+        <CompoundOrigins>
+          <speciesText>Dapis</speciesText>
+          <speciesAccession>NCBI:txid2302373</speciesAccession>
+          <SourceType>PubMed Id</SourceType>
+          <SourceAccession>32352773</SourceAccession>
+        </CompoundOrigins>
+      </return>
+    </getCompleteEntityResponse>
+  </S:Body>
+</S:Envelope>
