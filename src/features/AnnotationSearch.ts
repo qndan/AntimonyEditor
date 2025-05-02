@@ -1,4 +1,5 @@
 import React from "react";
+import convert from "xml-js";
 const corsProxyUrl = "https://corsproxy.io/?"; // "https://api.allorigins.win/raw?url=";
 
 /**
@@ -69,7 +70,6 @@ export async function searchChebi(
       return undefined;
     }
 
-    const convert = require("xml-js");
     const data = await response.text();
     let jsonStr = convert.xml2json(data, {
       compact: true,
@@ -119,7 +119,6 @@ async function getCompleteChebiEntity(id: string): Promise<string | any> {
     );
 
     if (response.ok) {
-      const convert = require("xml-js");
       const data = await response.text();
       let jsonStr = convert.xml2json(data, {
         compact: true,

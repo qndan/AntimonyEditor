@@ -1,6 +1,6 @@
-import { readFileSync } from "fs";
-import { searchRhea, AnnotationInfo } from "../../features/AnnotationSearch";
-import { Octokit } from "octokit";
+import { readFile, readFileSync } from "fs";
+import { searchChebi, searchRhea, AnnotationInfo, searchUniProt } from "../../features/AnnotationSearch";
+import path from "path";
 
 describe("AnnotationSearch", function () {
   const makeMockKeyboardEvent = (text: string) => {
@@ -8,6 +8,8 @@ describe("AnnotationSearch", function () {
       target: { value: text },
     } as unknown as KeyboardEvent;
   };
+
+  const mockBadResponse = { ok: false } as unknown as Response;
 
   const makeMockResponse = (text: string) => {
     return Promise.resolve({
@@ -19,31 +21,95 @@ describe("AnnotationSearch", function () {
   const makeMockRheaResponse =
     (rows: string[]) => makeMockResponse("Reaction identifier	Equation	EC number\n" + rows.join("\n"));
 
-  describe("searchRhea", () => {
-    const sampleQuery = readFileSync("src/__tests__/features/rhea_sample.txt", "utf8").toString();
-
+  const itShouldReturnZeroResultsForAppropriateCases = (searchFunction: (event: KeyboardEvent, limit: number) => Promise<AnnotationInfo[] | undefined>) => {
     it("should have no results when zero are requested", async () => {
-      const result = await searchRhea(makeMockKeyboardEvent(""), 0);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0);
       expect(result).toEqual([]);
     });
 
     it("should have no results when zero results are requested", async () => {
-      const result = await searchRhea(makeMockKeyboardEvent(""), 0);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0);
       expect(result).toEqual([]);
     });
 
     it("should have no results on empty input", async () => {
-      const result = await searchRhea(makeMockKeyboardEvent(""), 10);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 10);
       expect(result).toEqual([]);
     });
 
     it("should have no results on empty input 2", async () => {
-      const result = await searchRhea(makeMockKeyboardEvent(""), 1);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 1);
       expect(result).toEqual([]);
     });
 
+    it("should have be undefined on bad response", async () => {
+      jest.spyOn(global, "fetch").mockImplementation(() => Promise.resolve(mockBadResponse));
+      const result = await (searchFunction)(makeMockKeyboardEvent("a"), 1);
+      expect(result).toBeUndefined();
+    });
+  };
+
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
+  beforeEach(() => {
+    jest.spyOn(global.console, "log").mockImplementation(() => {});
+  })
+
+  describe("Chebi", () => {
+    itShouldReturnZeroResultsForAppropriateCases(searchChebi);
+
+    // Could maybe write a script to grab these files in the future.
+    const chebiLiteText = readFileSync(path.resolve(__dirname, "./queries/chebi_lite.xml"), "utf8").toString();
+    const chebiFaultText = readFileSync(path.resolve(__dirname, "./queries/chebi_fault.xml"), "utf8").toString();
+    const chebiFullEntries: Record<string, string> = {
+      ["CHEBI:211886"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211886.xml"), "utf8").toString(),
+      ["CHEBI:211893"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211893.xml"), "utf8").toString(),
+      ["CHEBI:224188"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224188.xml"), "utf8").toString(),
+      ["CHEBI:224192"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224192.xml"), "utf8").toString(),
+      ["CHEBI:224197"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224197.xml"), "utf8").toString(),
+    }
+
+    it("should return undefined on CHEBI webservice fault", async () => {
+      jest.spyOn(global, "fetch").mockImplementation(() => Promise.resolve(makeMockResponse(chebiFaultText)));
+      
+      const result = await searchChebi(makeMockKeyboardEvent("a"), 1);
+      expect(result).toBeUndefined();
+    });
+
+    it("should work with real-world sample", async () => {
+      jest.spyOn(global, "fetch").mockImplementation((url: any) => {
+        if (/getLiteEntity/.test(url)) {
+          return makeMockResponse(chebiLiteText);
+        } else {
+          const id = /chebiId=CHEBI:(\d+)/.exec(url)?.[1];
+          if (!id) {
+            throw new Error("No ID found in URL");
+          }
+          return makeMockResponse(chebiFullEntries[id]);
+        }
+      });
+
+      // CHEBI doesn't seem to provide any descriptive text in getCompleteEntity.
+      const result = await searchChebi(makeMockKeyboardEvent("a"), 1);
+      expect(result).toEqual([
+        { id: "CHEBI:211886", name: "Heydenoic acid A", description: "", link: "http://identifiers.org/chebi/CHEBI:211886" },
+        { id: "CHEBI:211893", name: "Heydenoic acid B", description: "", link: "http://identifiers.org/chebi/CHEBI:211893" },
+        { id: "CHEBI:224188", name: "Iheyamide A", description: "", link: "http://identifiers.org/chebi/CHEBI:224188" },
+        { id: "CHEBI:224192", name: "Iheyamide B", description: "", link: "http://identifiers.org/chebi/CHEBI:224192" },
+        { id: "CHEBI:224197", name: "Iheyamide C", description: "", link: "http://identifiers.org/chebi/CHEBI:224197" },
+      ]);
+    });
+  });
+
+  describe("Rhea", () => {
+    const sampleQuery = readFileSync(path.resolve(__dirname, "./queries/rhea_sample.txt"), "utf8").toString();
+
+    itShouldReturnZeroResultsForAppropriateCases(searchRhea);
+
     it("should parse no EC number", async () => {
-      global.fetch = jest.fn(() =>
+      jest.spyOn(global, "fetch").mockImplementation(() =>
         makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	"]));
 
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
@@ -51,7 +117,7 @@ describe("AnnotationSearch", function () {
     });
 
     it("should parse one EC number", async () => {
-      global.fetch = jest.fn(() =>
+      jest.spyOn(global, "fetch").mockImplementation(() =>
         makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1"]));
 
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
@@ -59,7 +125,7 @@ describe("AnnotationSearch", function () {
     });
 
     it("should parses multiple EC numbers", async () => {
-      global.fetch = jest.fn(() =>
+      jest.spyOn(global, "fetch").mockImplementation(() =>
         makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1.2.3.4;EC:5.6.7.8;EC:9.10.11"]));
       
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
@@ -68,7 +134,7 @@ describe("AnnotationSearch", function () {
 
     // sample acquired with curl "https://www.rhea-db.org/rhea/?query=t&columns=rhea-id,equation,ec&format=tsv&limit=16" (Apr 2025)
     it("should correctly parse a real-world sample", async () => {
-      global.fetch = jest.fn(() => makeMockResponse(sampleQuery));
+      jest.spyOn(global, "fetch").mockImplementation(() => makeMockResponse(sampleQuery));
 
       const result = await searchRhea(makeMockKeyboardEvent("a"), 16);
       expect(result).toEqual([
