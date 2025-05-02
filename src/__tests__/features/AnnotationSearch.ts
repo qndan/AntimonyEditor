@@ -38,31 +38,34 @@ describe("AnnotationSearch", function () {
     });
   }
 
-  const itShouldReturnZeroResultsForAppropriateCases = (searchFunction: (event: KeyboardEvent, limit: number) => Promise<AnnotationInfo[] | undefined>) => {
+  const itShouldReturnZeroResultsForAppropriateCases = (
+    searchFunction: any,
+    ...extraParams: any[]
+  ) => {
     it("should have no results when zero are requested", async () => {
-      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0, ...extraParams);
       expect(result).toEqual([]);
     });
 
     it("should have no results when zero results are requested", async () => {
-      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 0, ...extraParams);
       expect(result).toEqual([]);
     });
 
     it("should have no results on empty input", async () => {
-      const result = await (searchFunction)(makeMockKeyboardEvent(""), 10);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 10, ...extraParams);
       expect(result).toEqual([]);
     });
 
     it("should have no results on empty input 2", async () => {
-      const result = await (searchFunction)(makeMockKeyboardEvent(""), 1);
+      const result = await (searchFunction)(makeMockKeyboardEvent(""), 1, ...extraParams);
       expect(result).toEqual([]);
     });
 
     it("should have be undefined on bad response", async () => {
       spyOnFetchWithResponse(mockBadResponse);
 
-      const result = await (searchFunction)(makeMockKeyboardEvent("a"), 1);
+      const result = await (searchFunction)(makeMockKeyboardEvent("a"), 1, ...extraParams);
       expect(result).toBeUndefined();
     });
   };
@@ -220,6 +223,28 @@ describe("AnnotationSearch", function () {
   });
 
   describe("Ontology", () => {
+    // Command: curl "https://www.ebi.ac.uk/ols4/api/v2/entities?search=hi&size=6&page=0&ontologyId=cl&lang=en&exactMatch=false&includeObsoleteEntities=false&isDefiningOntology=true" > src/__tests__/features/queries/ontology_sample.json
+    const sampleQuery = readFileSync(path.resolve(__dirname, "./queries/ontology_sample.json"), "utf8").toString();
+    
+    itShouldReturnZeroResultsForAppropriateCases(searchOntology, "cl");
 
+    it("should return empty array with invalid ontology ID", async () => {
+      const result = await searchOntology(makeMockKeyboardEvent("a"), 1, "okawekfawekdosafk");
+      expect(result).toEqual([]);
+    });
+
+    it("should work with real-world sample", async () => {
+      spyOnFetchWithResponse(makeMockJsonResponse(JSON.parse(sampleQuery)));
+
+      const result = await searchOntology(makeMockKeyboardEvent("abc"), 1, "cl");
+      expect(result).toEqual([
+        { id: "CL:1001580", name: "hippocampal glial cell", description: "A glial cell that is part of the hippocampus.", link: "http://purl.obolibrary.org/obo/CL_1001580" },
+        { id: "CL:0002604", name: "hippocampal astrocyte", description: "An astrocyte that is part of the hippocampus.", link: "http://purl.obolibrary.org/obo/CL_0002604" },
+        { id: "CL:1001571", name: "hippocampal pyramidal neuron", description: "A pyramidal neuron with a soma found in the hippocampus.", link: "http://purl.obolibrary.org/obo/CL_1001571" },
+        { id: "CL:0000373", name: "histoblast", description: "A progenitor cell found in the larval epidermis of insects and that gives rise to the adult abdominal epidermis.", link: "http://purl.obolibrary.org/obo/CL_0000373" },
+        { id: "CL:0017010", name: "hillock cell of urethral epithelium", description: "A hillock cell that is part of the urethra.", link: "http://purl.obolibrary.org/obo/CL_0017010" },
+        { id: "CL:4030024", name: "hillock cell", description: "An epithelial, transitional cell type between basal and secretory; located in stratified, non-ciliated structures (called hillocks) with high cell turnover in epithelium. In some mammalian species, this cell type has been noted to express KRT13 and is postulated to play a role in squamous barrier function and immunomodulation.", link: "http://purl.obolibrary.org/obo/CL_4030024" },
+      ]);
+    });
   });
-})
+});
