@@ -56,7 +56,7 @@ export async function searchChebi(
   size: number
 ): Promise<AnnotationInfo[] | undefined> {
   try {
-    const queryText = (search.target as HTMLInputElement).value.trim();
+    const queryText = encodeURIComponent((search.target as HTMLInputElement).value.trim());
     if (size <= 0 || queryText.length === 0) {
       return [];
     }
@@ -115,7 +115,7 @@ async function getCompleteChebiEntity(id: string): Promise<string | any> {
   try {
     const response = await fetch(
       corsProxyUrl +
-        `https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId=${id}`
+        `https://www.ebi.ac.uk/webservices/chebi/2.0/test/getCompleteEntity?chebiId=${encodeURIComponent(id)}`
     );
 
     if (response.ok) {
@@ -149,7 +149,7 @@ export async function searchUniProt(
   size: number
 ): Promise<AnnotationInfo[] | undefined> {
   try {
-    const queryText = (search.target as HTMLInputElement).value.trim();
+    const queryText = encodeURIComponent((search.target as HTMLInputElement).value.trim());
     if (size <= 0 || queryText.length === 0) {
       return [];
     }
@@ -163,7 +163,6 @@ export async function searchUniProt(
     }
 
     const data = await response.json();
-    console.log(data);
     const info: AnnotationInfo[] = data.results.map((result: any) => {
       return {
         id: result.uniProtkbId,
@@ -195,7 +194,7 @@ export async function searchRhea(
   size: number
 ): Promise<AnnotationInfo[] | undefined> {
   try {
-    const queryText = (search.target as HTMLInputElement).value.trim();
+    const queryText = encodeURIComponent((search.target as HTMLInputElement).value.trim());
     if (size <= 0 || queryText.length === 0) {
       return [];
     }
@@ -257,13 +256,13 @@ export async function searchOntology(
   ontologyId: string
 ): Promise<AnnotationInfo[] | undefined> {
   try {
-    const queryText = (search.target as HTMLInputElement).value.trim();
+    const queryText = encodeURIComponent((search.target as HTMLInputElement).value.trim());
     if (size <= 0 || queryText.length === 0 || !validOntologyIds.includes(ontologyId)) {
       return [];
     }
 
     const response = await fetch(
-      `https://www.ebi.ac.uk/ols4/api/v2/entities?search=${queryText}&size=${size}&page=0&ontologyId=${ontologyId}&lang=en&exactMatch=false&includeObsoleteEntities=false&isDefiningOntology=true`
+      `https://www.ebi.ac.uk/ols4/api/v2/entities?search=${queryText}&size=${size}&page=0&ontologyId=${encodeURIComponent(ontologyId)}&lang=en&exactMatch=false&includeObsoleteEntities=false&isDefiningOntology=true`
     );
 
     if (!response.ok) {
