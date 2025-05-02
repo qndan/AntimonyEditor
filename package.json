@@ -123,6 +123,9 @@
       "src/**/*.{js,jsx,ts,tsx}",
       "!src/**/*.d.ts"
     ],
+    "coveragePathIgnorePatterns": [
+      "/src/language-handler/antlr/"
+    ],
     "setupFiles": [
       "react-app-polyfill/jsdom"
     ],
