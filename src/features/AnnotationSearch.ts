@@ -128,7 +128,7 @@ async function getCompleteChebiEntity(id: string): Promise<string | any> {
       let resBody = results["S:Envelope"]["S:Body"];
 
       if (resBody["S:Fault"] === undefined) {
-        return resBody["getCompleteEntityResponse"]["return"]["definition"]._text as string;
+        return resBody["getCompleteEntityResponse"]["return"]["definition"]._text ?? "";
       }
       return "";
     }

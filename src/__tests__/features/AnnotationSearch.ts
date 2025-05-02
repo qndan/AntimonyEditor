@@ -81,11 +81,11 @@ describe("AnnotationSearch", function () {
     const chebiLiteText = readFileSync(path.resolve(__dirname, "./queries/chebi_lite.xml"), "utf8").toString();
     const chebiFaultText = readFileSync(path.resolve(__dirname, "./queries/chebi_fault.xml"), "utf8").toString();
     const chebiFullEntries: Record<string, string> = {
-      ["CHEBI:211886"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211886.xml"), "utf8").toString(),
-      ["CHEBI:211893"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211893.xml"), "utf8").toString(),
-      ["CHEBI:224188"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224188.xml"), "utf8").toString(),
-      ["CHEBI:224192"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224192.xml"), "utf8").toString(),
-      ["CHEBI:224197"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224197.xml"), "utf8").toString(),
+      ["211886"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211886.xml"), "utf8").toString(),
+      ["211893"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_211893.xml"), "utf8").toString(),
+      ["224188"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224188.xml"), "utf8").toString(),
+      ["224192"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224192.xml"), "utf8").toString(),
+      ["224197"]: readFileSync(path.resolve(__dirname, "./queries/chebi_full_224197.xml"), "utf8").toString(),
     }
 
     it("should return undefined on CHEBI webservice fault", async () => {
@@ -103,7 +103,7 @@ describe("AnnotationSearch", function () {
         if (/getLiteEntity/.test(url)) {
           return Promise.resolve(makeMockResponse(chebiLiteText));
         } else {
-          const id = /chebiId=CHEBI:(\d+)/.exec(url)?.[1];
+          const id = /chebiId=CHEBI%3A(\d+)/.exec(url)?.[1];
           if (!id) {
             throw new Error("No ID found in URL");
           }
@@ -132,6 +132,7 @@ describe("AnnotationSearch", function () {
 
     it("should return empty array when there's no results", async () => {
       spyOnFetchWithResponse(makeMockJsonResponse({ results: [] }));
+      
       const result = await searchUniProt(makeMockKeyboardEvent("asdfaefpafl"), 1);
       expect(result).toEqual([]);
     });
