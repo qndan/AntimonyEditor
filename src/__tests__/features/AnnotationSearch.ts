@@ -1,5 +1,5 @@
-import { readFile, readFileSync } from "fs";
-import { searchChebi, searchRhea, AnnotationInfo, searchUniProt } from "../../features/AnnotationSearch";
+import { readFileSync } from "fs";
+import { searchChebi, searchRhea, searchUniProt, searchOntology, AnnotationInfo } from "../../features/AnnotationSearch";
 import path from "path";
 
 describe("AnnotationSearch", function () {
@@ -12,14 +12,31 @@ describe("AnnotationSearch", function () {
   const mockBadResponse = { ok: false } as unknown as Response;
 
   const makeMockResponse = (text: string) => {
-    return Promise.resolve({
+    return {
       ok: true,
       text: () => Promise.resolve(text),
-    } as unknown as Response);
+    } as unknown as Response;
   };
-  
+
+  const makeMockJsonResponse = (json: any) => {
+    return {
+      ok: true,
+      json: () => Promise.resolve(json),
+    } as unknown as Response;
+  };
+
   const makeMockRheaResponse =
     (rows: string[]) => makeMockResponse("Reaction identifier	Equation	EC number\n" + rows.join("\n"));
+
+  const silenceConsoleLog = () => {
+    jest.spyOn(global.console, "log").mockImplementation(() => { });
+  };
+
+  const spyOnFetchWithResponse = (response: Response) => {
+    jest.spyOn(global, "fetch").mockImplementation(_ => {
+      return Promise.resolve(response);
+    });
+  }
 
   const itShouldReturnZeroResultsForAppropriateCases = (searchFunction: (event: KeyboardEvent, limit: number) => Promise<AnnotationInfo[] | undefined>) => {
     it("should have no results when zero are requested", async () => {
@@ -43,21 +60,18 @@ describe("AnnotationSearch", function () {
     });
 
     it("should have be undefined on bad response", async () => {
-      jest.spyOn(global, "fetch").mockImplementation(() => Promise.resolve(mockBadResponse));
+      spyOnFetchWithResponse(mockBadResponse);
+
       const result = await (searchFunction)(makeMockKeyboardEvent("a"), 1);
       expect(result).toBeUndefined();
     });
   };
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
-  beforeEach(() => {
-    jest.spyOn(global.console, "log").mockImplementation(() => {});
-  })
-
-  describe("Chebi", () => {
+  describe("ChEBI", () => {
     itShouldReturnZeroResultsForAppropriateCases(searchChebi);
 
     // Could maybe write a script to grab these files in the future.
@@ -72,8 +86,11 @@ describe("AnnotationSearch", function () {
     }
 
     it("should return undefined on CHEBI webservice fault", async () => {
+      silenceConsoleLog();
+      spyOnFetchWithResponse(makeMockResponse(chebiFaultText));
+
       jest.spyOn(global, "fetch").mockImplementation(() => Promise.resolve(makeMockResponse(chebiFaultText)));
-      
+
       const result = await searchChebi(makeMockKeyboardEvent("a"), 1);
       expect(result).toBeUndefined();
     });
@@ -81,13 +98,14 @@ describe("AnnotationSearch", function () {
     it("should work with real-world sample", async () => {
       jest.spyOn(global, "fetch").mockImplementation((url: any) => {
         if (/getLiteEntity/.test(url)) {
-          return makeMockResponse(chebiLiteText);
+          return Promise.resolve(makeMockResponse(chebiLiteText));
         } else {
           const id = /chebiId=CHEBI:(\d+)/.exec(url)?.[1];
           if (!id) {
             throw new Error("No ID found in URL");
           }
-          return makeMockResponse(chebiFullEntries[id]);
+
+          return Promise.resolve(makeMockResponse(chebiFullEntries[id]));
         }
       });
 
@@ -103,38 +121,81 @@ describe("AnnotationSearch", function () {
     });
   });
 
+  describe("UniProt", () => {
+    // Command: curl "https://rest.uniprot.org/uniprotkb/search?fields=accession%2Creviewed%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Clength&query=%28ok%29&size=6" >> src/__tests__/features/queries/uniprot_sample.txt
+    const sampleQuery = readFileSync(path.resolve(__dirname, "./queries/uniprot_sample.json"), "utf8").toString();
+
+    itShouldReturnZeroResultsForAppropriateCases(searchUniProt);
+
+    it("should return empty array when there's no results", async () => {
+      spyOnFetchWithResponse(makeMockJsonResponse({ results: [] }));
+      const result = await searchUniProt(makeMockKeyboardEvent("asdfaefpafl"), 1);
+      expect(result).toEqual([]);
+    });
+
+    it("should work with real-world sample", async () => {
+      spyOnFetchWithResponse(makeMockJsonResponse(JSON.parse(sampleQuery)));
+      
+      const result = await searchUniProt(makeMockKeyboardEvent("UNIPROT"), 1);
+      expect(result).toEqual([
+        {
+          id: "KLH18_HUMAN", name: "Kelch-like protein 18", description: "", link: "https://www.uniprot.org/uniprotkb/O94889/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+        {
+          id: "NOTUM_HUMAN", name: "Palmitoleoyl-protein carboxylesterase NOTUM", description: "", link: "https://www.uniprot.org/uniprotkb/Q6P988/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+        {
+          id: "TYSY_HUMAN", name: "Thymidylate synthase", description: "", link: "https://www.uniprot.org/uniprotkb/P04818/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+        {
+          id: "CTNB1_HUMAN", name: "Catenin beta-1", description: "", link: "https://www.uniprot.org/uniprotkb/P35222/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+        {
+          id: "NIP7_HUMAN", name: "60S ribosome subunit biogenesis protein NIP7 homolog", description: "", link: "https://www.uniprot.org/uniprotkb/Q9Y221/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+        {
+          id: "TBB5_HUMAN", name: "Tubulin beta chain", description: "", link: "https://www.uniprot.org/uniprotkb/P07437/entry",
+          organism: { scientificName: "Homo sapiens", commonName: "Human" }
+        },
+      ]);
+    });
+  });
+
+
   describe("Rhea", () => {
     const sampleQuery = readFileSync(path.resolve(__dirname, "./queries/rhea_sample.txt"), "utf8").toString();
 
     itShouldReturnZeroResultsForAppropriateCases(searchRhea);
 
     it("should parse no EC number", async () => {
-      jest.spyOn(global, "fetch").mockImplementation(() =>
-        makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	"]));
+      spyOnFetchWithResponse(makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	"]));
 
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
       expect(result[0]?.ec).toEqual([]);
     });
 
     it("should parse one EC number", async () => {
-      jest.spyOn(global, "fetch").mockImplementation(() =>
-        makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1"]));
+      spyOnFetchWithResponse(makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1"]));
 
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
       expect(result[0]?.ec).toEqual(["1"]);
     });
 
     it("should parses multiple EC numbers", async () => {
-      jest.spyOn(global, "fetch").mockImplementation(() =>
-        makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1.2.3.4;EC:5.6.7.8;EC:9.10.11"]));
-      
+      spyOnFetchWithResponse(makeMockRheaResponse(["RHEA:37891	aclacinomycin T + H2O = 15-demethylaclacinomycin T + methanol	EC:1.2.3.4;EC:5.6.7.8;EC:9.10.11"]));
+
       const result = await searchRhea(makeMockKeyboardEvent("h"), 1) as AnnotationInfo[];
       expect(result[0]?.ec).toEqual(["1.2.3.4", "5.6.7.8", "9.10.11"]);
     });
 
     // sample acquired with curl "https://www.rhea-db.org/rhea/?query=t&columns=rhea-id,equation,ec&format=tsv&limit=16" (Apr 2025)
     it("should correctly parse a real-world sample", async () => {
-      jest.spyOn(global, "fetch").mockImplementation(() => makeMockResponse(sampleQuery));
+      spyOnFetchWithResponse(makeMockResponse(sampleQuery));
 
       const result = await searchRhea(makeMockKeyboardEvent("a"), 16);
       expect(result).toEqual([
@@ -158,58 +219,7 @@ describe("AnnotationSearch", function () {
     });
   });
 
+  describe("Ontology", () => {
 
-  // it('basic rhea query', async () => {
-  //     global.fetch = () => Promise.resolve({
-  //         ok: true,
-  //         json: () => Promise.resolve({ results: [
-  //             {id: '1', equation: 'kevin' },
-  //             {id: '2', equation: 'edison' },
-  //             {id: '3', equation: 'eva' },
-  //             {id: '4', equation: 'anish' },
-  //             {id: '5', equation: 'steve' }
-  //         ]}),
-  //         // body: new Readable,
-  //         // bodyUsed: true,
-  //         // headers: new Headers(),
-  //         // redirected: false,
-  //         // status: 200,
-  //         // statusText: 'OK',
-  //         // type: 'cors',
-  //         // url: '',
-  //     });
-
-  //     (searchInput.target as HTMLInputElement).value = 'Test'
-  //     const result = await searchRhea(searchInput, 1);
-  //     assert.deepStrictEqual(result, [
-  //         {description: "", id: '1', name: 'kevin', link: "https://www.rhea-db.org/rhea/1"},
-  //         {description: "", id: '2', name: 'edison', link: "https://www.rhea-db.org/rhea/2"},
-  //         {description: "", id: '3', name: 'eva', link: "https://www.rhea-db.org/rhea/3"},
-  //         {description: "", id: '4', name: 'anish', link: "https://www.rhea-db.org/rhea/4"},
-  //         {description: "", id: '5', name: 'steve', link: "https://www.rhea-db.org/rhea/5"}
-  //     ]);
-  // })
-
-  // it('basic ontology query', async () => {
-  //     global.fetch = () => Promise.resolve({
-  //         ok: true,
-  //         json: () => Promise.resolve({ results: {elements: [
-  //             {curie: '1', label: 'kevin', description: {value: "goat"}, iri: "link1", type: ["class", "entity"]},
-  //             {curie: '2', label: 'edison', description: {value: "slack variable"}, iri: "link2", type: ["class", "entity"]},
-  //             {curie: '3', label: 'eva' , description: {value: "god"}, iri: "link3", type: ["class", "entity"]},
-  //             {curie: '4', label: 'anish', description: {value: "smart"}, iri: "link4", type: ["class", "entity"]},
-  //             {curie: '5', label: 'steve', description: {value: "the steve"}, iri:"link5", type: ["class", "entity"]}
-  //         ]}}),
-  //     });
-
-  //     (searchInput.target as HTMLInputElement).value = 'Test'
-  //     const result = await searchOntology(searchInput, 1, "go");
-  //     assert.deepStrictEqual(result, [
-  //         {description: "goat", id: '1', name: 'kevin', link: "https://www.rhea-db.org/rhea/1"},
-  //         {description: "slack variable", id: '2', name: 'edison', link: "https://www.rhea-db.org/rhea/2"},
-  //         {description: "god", id: '3', name: 'eva', link: "https://www.rhea-db.org/rhea/3"},
-  //         {description: "smart", id: '4', name: 'anish', link: "https://www.rhea-db.org/rhea/4"},
-  //         {description: "the steve", id: '5', name: 'steve', link: "https://www.rhea-db.org/rhea/5"}
-  //     ]);
-  // })
+  });
 })
