@@ -2,7 +2,7 @@ import { useState } from "react";
 import { render, RenderResult } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
-import FileExplorer, { FileExplorerProps } from "../components/file-explorer/FileExplorer";
+import FileExplorer, { FileExplorerProps } from "../../components/file-explorer/FileExplorer";
 
 describe("FileExplorer", () => {
     /**

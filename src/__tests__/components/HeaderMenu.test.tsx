@@ -1,6 +1,6 @@
 import { render, RenderResult } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import HeaderMenuDropdown from "../components/header-menu/HeaderMenuDropdown";
+import HeaderMenuDropdown from "../../components/header-menu/HeaderMenuDropdown";
 
 describe("HeaderDropdown", () => {
   /** Convience function to query menuitems. */
