@@ -22,7 +22,7 @@ import TurndownService from "turndown";
  * @property {function} handleSelectedPosition -
  * @property {function} handleConversionSBML - Handle the SBML to Antimony file conversion
  */
-interface AntimonyEditorProps {
+export interface AntimonyEditorProps {
   fileName: string;
   annotUnderlinedOn: boolean;
   setAnnotUnderlinedOn: (value: React.SetStateAction<boolean>) => void;
@@ -30,7 +30,6 @@ interface AntimonyEditorProps {
   setEditorInstance: React.Dispatch<React.SetStateAction<monaco.editor.IStandaloneCodeEditor | null>>;
   selectedFilePosition: SrcPosition;
   handleSelectedPosition: (position: SrcPosition) => void;
-  setHighlightColor: (color: string) => void;
   highlightColor: string;
   handleNewFile: (newFileName: string, newFileContent: string) => Promise<void>;
 }
@@ -82,6 +81,28 @@ declare global {
   }
 }
 
+export const processContent = (content: string) => {
+  const turndownService = new TurndownService();
+  const regex = /```([\s\S]*?)```/g;   // Match content inside triple backticks
+
+  let processedContent = content.replace(regex, (match, htmlContent) => {
+    // Check if the content inside the backticks is HTML (simple check)
+    const isHtml = /<\/?[a-z][\s\S]*>/i.test(htmlContent);
+    if (isHtml) {
+      // Convert HTML to Markdown
+      const markdown = turndownService.turndown(htmlContent);
+      const indentedMarkdown = markdown
+        .split('\n')
+        .map(line => `\t\t${line}`) // Add a tab to the beginning of each line
+        .join('\n');
+      return `\`\`\`\n${indentedMarkdown}\n\t\`\`\``;
+    }
+    return match; // Return original if no HTML found
+  });
+
+  return processedContent
+};
+
 /**
  * @description AntimonyEditor component
  * @param content - AntimonyEditorProp
@@ -116,7 +137,6 @@ const AntimonyEditor: React.FC<AntimonyEditorProps & { database: IDBPDatabase<My
           useState<{id: string, name: string | undefined} | null>(null);
       const [decorations, setDecorations] = useState<string[]>([]);
       const [searchMode, setSearchMode] = useState<'standard' | 'model_number'>('standard');
-      const turndownService = new TurndownService();
 
       /**
        * @description adds the menu option to create an annotation
@@ -296,27 +316,6 @@ const AntimonyEditor: React.FC<AntimonyEditorProps & { database: IDBPDatabase<My
               }
             );
       }
-
-      const processContent = (content: string) => {
-        const regex = /```([\s\S]*?)```/g;   // Match content inside triple backticks
-
-        let processedContent = content.replace(regex, (match, htmlContent) => {
-          // Check if the content inside the backticks is HTML (simple check)
-          const isHtml = /<\/?[a-z][\s\S]*>/i.test(htmlContent);
-          if (isHtml) {
-            // Convert HTML to Markdown
-            const markdown = turndownService.turndown(htmlContent);
-            const indentedMarkdown = markdown
-              .split('\n')
-              .map(line => `\t\t${line}`) // Add a tab to the beginning of each line
-              .join('\n');
-            return `\`\`\`\n${indentedMarkdown}\n\t\`\`\``;
-          }
-          return match; // Return original if no HTML found
-        });
-      
-        return processedContent
-      };
 
       /**
        * @description Initial load of the selected file, retrieve the data, activates loading the editor by setting selectedFile state

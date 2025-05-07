@@ -376,7 +376,6 @@ const App: React.FC = () => {
                 selectedFilePosition={selectedEditorPosition}
                 handleSelectedPosition={handleSelectedPosition}
                 highlightColor={highlightColor}
-                setHighlightColor={setHighlightColor}
                 handleNewFile={handleNewFile}
               />
             ) : (
